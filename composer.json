@@ -1,0 +1,26 @@
+{
+  "name": "markei/wordpress-security-protection",
+  "type": "wordpress-plugin",
+  "license": "MIT",
+  "description": "Security & protection improvements: login event history, prevent login brute force, hide backend, update status API",
+  "homepage": "https://github.com/Markei/wordpress-plugin-security-protection",
+  "authors": [
+        {
+            "name": "Maarten de Keizer",
+            "homepage": "http://www.maartendekeizer.nl/"
+        }
+  ],
+  "keywords": [
+    "wordpress",
+    "wordpress-plugin",
+    "security"
+  ],
+  "support": {
+    "issues": "https://github.com/Markei/wordpress-plugin-security-protection/issues",
+    "docs": "https://github.com/Markei/wordpress-plugin-security-protection"
+  },
+  "require": {
+    "php": ">=5.6.0",
+    "composer/installers": "~1.0"
+  }
+}
