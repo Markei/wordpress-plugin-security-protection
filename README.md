@@ -3,6 +3,8 @@ Markei Security and Protection
 
 Install the plugin via Composer
 
+    composer require markei/wordpress-security-protection
+
 Activate the plugin in WordPress admin
 
 Add the next two lines to `wordpress/wp-config.php` above `require_once(ABSPATH . 'wp-settings.php');`
