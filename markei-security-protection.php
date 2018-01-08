@@ -22,6 +22,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'notify' . DIRECTORY_SEPARATOR . 'm
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'hidebackend' . DIRECTORY_SEPARATOR . 'check_token.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'hidebackend' . DIRECTORY_SEPARATOR . 'generate_token.php';
 require_once __DIR__ . DIRECTORY_SEPARATOR . 'updatestate' . DIRECTORY_SEPARATOR . 'report.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'blockxmlrpc' . DIRECTORY_SEPARATOR . 'xmlrpcdie.php';
 
 // database
 register_activation_hook(__FILE__, function () {
@@ -95,3 +96,14 @@ add_action('login_enqueue_scripts', function () {
     echo PHP_EOL . '<style type="text/css"> body { background: #f1f1f1 url(' . $baseUrl . 'assets/login-background.png) no-repeat bottom left scroll !important; } </style>' . PHP_EOL;
 });
 
+// block xmlrpc
+add_filter('wp_die_xmlrpc_handler', function () {
+    return 'markei_security_protection_blockxmlrpc_xmlrpcdie';
+});
+add_action('init', function () {
+    if (defined('MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC') === true || MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC === true) {
+        if (substr($_SERVER['REQUEST_URI'], 0, 11) === '/xmlrpc.php') {
+            wp_die('XML-RPC access disabled', '', 404);
+        }
+    }
+});

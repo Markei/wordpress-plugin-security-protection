@@ -11,6 +11,7 @@ Add the next two lines to `wordpress/wp-config.php` above `require_once(ABSPATH 
 
     define('MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL', '/my-secret-cms');
     define('MARKEI_SECURITY_PROTECTION_UPDATEINFO_SECRET', 'super-secret-key');
+    define('MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC', true);
     
 Replace `/my-secret-cms` with an URL you like. Do **not** use `my-secret-cms`, `wp-admin` or `wp-login`! Mention the slash in the beginning. Replace `super-secret-key` with a [random long value](http://password.markei.nl/randomsave.txt).
 
