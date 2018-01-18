@@ -62,7 +62,7 @@ add_action('login_init', function () {
 });
 add_action('init', function () {
     if (defined('MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL') === true) {
-        if ($_SERVER['REQUEST_URI'] === MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL) {
+        if (rtrim($_SERVER['REQUEST_URI'], '/') === rtrim(MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL, '/')) {
             markei_security_protection_hidebackend_generate_token();
             wp_redirect('/wp-admin/', 302);
             wp_die('Redirecting to <a href="/wp-admin/">/wp-admin/</a>', 'Redirecting', 302);
