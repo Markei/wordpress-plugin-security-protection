@@ -13,9 +13,11 @@ function markei_security_protection_loginhistory_track($username, $success)
             'ip' => $_SERVER['REMOTE_ADDR'],
             'user' => substr($username, 0, 255),
             'useragent' => substr((isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : ''), 0, 255),
+            'request_uri' => $_SERVER['REQUEST_URI'],
             'success' => $success ? 1 : 0
         ],
         [
+            '%s',
             '%s',
             '%s',
             '%s',
