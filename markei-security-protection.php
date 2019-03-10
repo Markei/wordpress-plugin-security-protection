@@ -62,8 +62,13 @@ add_action('login_init', function () {
 });
 add_action('init', function () {
     if (defined('MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL') === true) {
-        if (rtrim($_SERVER['REQUEST_URI'], '/') === rtrim(MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL, '/')) {
+        $uri = strpos($_SERVER['REQUEST_URI'], '?') === false ? $_SERVER['REQUEST_URI'] : substr($_SERVER['REQUEST_URI'], 0, strpos($_SERVER['REQUEST_URI'], '?'));
+        if (rtrim($uri, '/') === rtrim(MARKEI_SECURITY_PROTECTION_HIDEBACKEND_URL, '/')) {
             markei_security_protection_hidebackend_generate_token();
+            if (isset($_GET['target'], $_GET['check']) && (sha1(NONCE_SALT . $_GET['target'] . NONCE_SALT) === $_GET['check'])) {
+                wp_redirect($_GET['target'], 302);
+                wp_die('Redirecting to <a href="' . $_GET['target'] . '">' . $_GET['target'] . '</a>', 'Redirecting', 302);
+            }
             wp_redirect('/wp-admin/', 302);
             wp_die('Redirecting to <a href="/wp-admin/">/wp-admin/</a>', 'Redirecting', 302);
         }
@@ -74,6 +79,17 @@ add_action('init', function () {
         }
     }
 }, 1000);
+add_filter('admin_url', function ($url) {
+    $matches = [];
+    if (preg_match('/(?P<base>.*)\/(?P<admin>wp-admin)\/(?P<page>comment\.php|edit-comments\.php)(?P<query>\??)(?P<qs>.*)/', $url, $matches)) {
+        if (empty($matches['page']) === false) {
+            $target = '/' . $matches['admin'] . '/' . $matches['page'] . $matches['query'] . $matches['qs'];
+            $checkCode = sha1(NONCE_SALT . $target . NONCE_SALT);
+            $url = $matches['base'] . '/' . 'cmslogin?' . http_build_query(['target' => $target, 'check' => $checkCode]);
+        }
+    }
+    return $url;
+});
 
 // update state
 add_action('init', function () {
