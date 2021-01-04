@@ -32,6 +32,18 @@ add_action('plugins_loaded', function () {
     markei_security_protection_database_migrate();
 });
 
+// block xmlrpc
+add_filter('wp_die_xmlrpc_handler', function () {
+    return 'markei_security_protection_blockxmlrpc_xmlrpcdie';
+});
+add_action('init', function () {
+    if (defined('MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC') === true && MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC === true) {
+        if (defined('XMLRPC_REQUEST')) {
+            wp_die('XML-RPC access disabled', '', 404);
+        }
+    }
+});
+
 // login history
 add_action('wp_login', function ($username) {
     markei_security_protection_loginhistory_track($username, true);
@@ -112,14 +124,3 @@ add_action('login_enqueue_scripts', function () {
     echo PHP_EOL . '<style type="text/css"> body { background: #f1f1f1 url(' . $baseUrl . 'assets/login-background.png) no-repeat bottom left scroll !important; } </style>' . PHP_EOL;
 });
 
-// block xmlrpc
-add_filter('wp_die_xmlrpc_handler', function () {
-    return 'markei_security_protection_blockxmlrpc_xmlrpcdie';
-});
-add_action('init', function () {
-    if (defined('MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC') === true || MARKEI_SECURITY_PROTECTION_BLOCKXMLRPC === true) {
-        if (substr($_SERVER['REQUEST_URI'], 0, 11) === '/xmlrpc.php') {
-            wp_die('XML-RPC access disabled', '', 404);
-        }
-    }
-});
