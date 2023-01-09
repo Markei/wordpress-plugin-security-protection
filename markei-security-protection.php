@@ -124,3 +124,14 @@ add_action('login_enqueue_scripts', function () {
     echo PHP_EOL . '<style type="text/css"> body { background: #f1f1f1 url(' . $baseUrl . 'assets/login-background.png) no-repeat bottom left scroll !important; } </style>' . PHP_EOL;
 });
 
+add_action('admin_menu', function () {
+    add_submenu_page('tools.php', 'Ip ban List', 'Ip ban List', 'manage_options', 'ip-ban-list-table', function () {
+        View_Render_Service::renderView('Ip_Ban_Overview');
+    });
+});
+
+add_action('admin_menu', function () {
+    add_submenu_page('tools.php', 'Login history','Login history', 'manage_options', 'login-history-list-table', function () {
+        View_Render_Service::renderView('Ip_History_Overview');
+    });
+});
