@@ -12,17 +12,15 @@ class Ip_History_Sql_Repository
 
         $sql = "SELECT * FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY LIMIT {$per_page} OFFSET {$offset}";
 
-        $result = $wpdb->get_results($sql, 'ARRAY_A');
-
-        return $result;
+        return $wpdb->get_results($sql, 'ARRAY_A');
     }
 
-    public static function count_records(): string
+    public static function count_records(): int
     {
         global $wpdb;
-        
-        $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}markei_loginhistory";
-        
-        return $wpdb->get_var($sql);
+
+        $sql = "SELECT count(*) FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY";
+
+        return absint($wpdb->get_var($sql));
     }
 }
