@@ -25,12 +25,12 @@ class Ip_Ban_Sql_Repository
         $wpdb->delete("{$wpdb->prefix}markei_ipban", ['id' => $id], ['%d']);
     }
 
-    public static function count_records(): string
+    public static function count_records(): int
     {
         global $wpdb;
         
         $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}markei_ipban";
         
-        return $wpdb->get_var($sql);
+        return absint($wpdb->get_var($sql));
     }
 }
