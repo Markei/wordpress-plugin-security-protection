@@ -11,6 +11,8 @@ class Ip_History_List_Table extends WP_List_Table
         $columns = array(
             'ip' => 'IP',
             'request_uri' => 'Request URI',
+            'user' => 'Gebruiker',
+            'useragent' => 'Gebruikersagent',
             'datetime' => 'Datum',
             'success'=> 'Status'
         );
@@ -23,6 +25,8 @@ class Ip_History_List_Table extends WP_List_Table
         switch ($column_name) {
             case 'ip':
             case 'request_uri':
+            case 'user':
+            case 'useragent':
             case 'datetime':
                 return $item[$column_name];
             case 'success':
@@ -34,9 +38,9 @@ class Ip_History_List_Table extends WP_List_Table
 
     public function prepare_items(): void
     {
-        $this->_column_headers = array($this->get_columns());
+        $this->_column_headers = [$this->get_columns()];
 
-        $total_items = Ip_History_Sql_Repository::count_records();
+        $total_items = Ip_History_Sql_Repository::count_records(5, $this->get_pagenum());
 
         $this->set_pagination_args([
             'total_items' => $total_items,

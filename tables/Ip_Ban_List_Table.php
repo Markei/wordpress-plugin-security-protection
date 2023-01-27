@@ -4,7 +4,6 @@ declare(strict_types = 1);
 require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_SEPARATOR . 'Ip_Ban_Sql_Repository.php';
 
-// Navragen waarom elke keer absint gebruiken
 class Ip_Ban_List_Table extends WP_List_Table
 {
     public function get_columns(): array
@@ -13,8 +12,6 @@ class Ip_Ban_List_Table extends WP_List_Table
             'id' => 'Id',
             'cb' => '<input type="checkbox"/>',
             'ip' => 'IP',
-            'user' => 'Gebruiker',
-            'useragent' => 'Gebruikersagent',
             'start' => 'Start',
             'end' => 'Eind',
             'action'=> 'Acties'
@@ -35,7 +32,7 @@ class Ip_Ban_List_Table extends WP_List_Table
     public function column_cb($item): string
     {
         return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%d"/>', absint($item['id'])
+            '<input type="checkbox" name="bulk-delete[]" value="%s"/>', $item['id']
         );
     }
 
@@ -46,13 +43,11 @@ class Ip_Ban_List_Table extends WP_List_Table
         switch ($column_name) {
             case 'id':
             case 'ip':
-            case 'user':
-            case 'useragent':
             case 'start':
             case 'end':
                 return $item[$column_name];
             case 'action':
-                return sprintf('<a href="?page=%s&action=%s&id=%d&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', absint($item['id']), $delete_nonce);
+                return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', $item['id'], $delete_nonce);
             default:
                 return 'Waarde Onbekend';
         }
