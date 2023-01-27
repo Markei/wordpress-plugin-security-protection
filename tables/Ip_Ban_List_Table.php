@@ -45,7 +45,7 @@ class Ip_Ban_List_Table extends WP_List_Table
             case 'ip':
             case 'start':
             case 'end':
-                return $item[$column_name];
+                return esc_attr($item[$column_name]);
             case 'action':
                 return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', $item['id'], $delete_nonce);
             default:

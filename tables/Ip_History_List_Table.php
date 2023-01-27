@@ -28,7 +28,7 @@ class Ip_History_List_Table extends WP_List_Table
             case 'user':
             case 'useragent':
             case 'datetime':
-                return $item[$column_name];
+                return esc_attr($item[$column_name]);
             case 'success':
                 return $item[$column_name] == 1 ? 'Succesvol' : 'Mislukt';
             default:
