@@ -126,12 +126,13 @@ add_action('login_enqueue_scripts', function () {
 
 add_action('admin_menu', function () {
     add_submenu_page('tools.php', 'Ip ban List', 'Ip ban List', 'manage_options', 'ip-ban-list-table', function () {
-        View_Render_Service::renderView('Ip_Ban_Overview');
+        include_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Ip_Ban_Overview.php';
     });
 });
 
 add_action('admin_menu', function () {
     add_submenu_page('tools.php', 'Login history','Login history', 'manage_options', 'login-history-list-table', function () {
-        View_Render_Service::renderView('Ip_History_Overview');
+        // vraagje over
+        include_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'Ip_History_Overview.php';
     });
 });
