@@ -1,14 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-// navragen of static methods hier wel handig zijn
 class Ip_History_Sql_Repository
 {
     public static function FindFromLastWeek(int $per_page, int $page_number): array
     {
         global $wpdb;
 
-        $offset = ($page_number - 1) * $per_page;
+        $offset = $page_number * $per_page;
 
         $sql = "SELECT * FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY LIMIT {$per_page} OFFSET {$offset}";
 

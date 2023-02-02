@@ -65,7 +65,7 @@ class Ip_Ban_List_Table extends WP_List_Table
     public function process_action(): void
     {
         if ('delete' === $this->current_action()) {
-            $nonce = esc_attr($_REQUEST['_wpnonce']);
+            $nonce = esc_attr($_REQUEST['_wpnonce']);// nalopen of esc_attr hier wel nodig is
 
             if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
                 die('Invalid security token!');
@@ -113,6 +113,8 @@ class Ip_Ban_List_Table extends WP_List_Table
         $this->process_action();
         $this->process_bulk_action();
 
-        $this->items = Ip_Ban_Sql_Repository::findAll(5, $this->get_pagenum());
+        $page_number = $this->get_pagenum() - 1;
+
+        $this->items = Ip_Ban_Sql_Repository::findAll(5, $page_number);
     }
 }

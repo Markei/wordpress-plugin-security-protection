@@ -51,6 +51,8 @@ class Ip_History_List_Table extends WP_List_Table
         $this->process_action();
         $this->process_bulk_action();
 
-        $this->items = Ip_History_Sql_Repository::FindFromLastWeek(5, $this->get_pagenum());
+        $page_number = $this->get_pagenum() - 1;
+
+        $this->items = Ip_History_Sql_Repository::FindFromLastWeek(5, $page_number);
     }
 }
