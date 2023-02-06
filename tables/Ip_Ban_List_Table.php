@@ -92,7 +92,7 @@ class Ip_Ban_List_Table extends WP_List_Table
             }
 
             if ((isset($_POST['action']) && $_POST['action'] === 'bulk-delete')) {
-                $delete_ip_address_ids = esc_sql($_POST['bulk-delete']);
+                $delete_ip_address_ids = $_POST['bulk-delete'];
     
                 foreach ($delete_ip_address_ids as $ip_address_id) {
                     Ip_Ban_Sql_Repository::delete(absint($ip_address_id));     // Waarom hier absint en niet (int)

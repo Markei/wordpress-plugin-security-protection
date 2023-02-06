@@ -19,8 +19,8 @@ class Ip_Ban_Sql_Repository
     public static function delete(int $id): void
     {
         global $wpdb;
-
-        $wpdb->delete("{$wpdb->prefix}markei_ipban", ['id' => $id], ['%d']);
+        // is esc_sql wel nodig als waarde een int moet zijn
+        $wpdb->delete("{$wpdb->prefix}markei_ipban", ['id' => esc_sql($id)], ['%d']);
     }
 
     public static function count_records(): int
