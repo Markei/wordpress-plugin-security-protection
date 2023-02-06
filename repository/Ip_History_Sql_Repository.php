@@ -8,7 +8,7 @@ class Ip_History_Sql_Repository
         global $wpdb;
 
         if ($per_page > 200) {
-            die('Only 200 items allowed to be shown per page.');
+            throw new InvalidArgumentException('Parameter per_page is not allowed to be greater then 200.');
         }
 
         $offset = $page_number * $per_page;
@@ -24,6 +24,6 @@ class Ip_History_Sql_Repository
 
         $sql = "SELECT count(*) FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY";
 
-        return absint($wpdb->get_var($sql));    // Waarom hier absint en niet (int)
+        return (int) $wpdb->get_var($sql);
     }
 }

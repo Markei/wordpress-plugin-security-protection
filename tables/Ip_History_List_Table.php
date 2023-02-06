@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_S
 
 class Ip_History_List_Table extends WP_List_Table
 {
-    const per_page = 5;
+    const PER_PAGE = 5;
 
     public function get_columns(): array
     {
@@ -30,7 +30,7 @@ class Ip_History_List_Table extends WP_List_Table
             case 'user':
             case 'useragent':
             case 'datetime':
-                return esc_attr($item[$column_name]);
+                return esc($item[$column_name]);
             case 'success':
                 return $item[$column_name] == 1 ? 'Succesvol' : 'Mislukt';
             default:
@@ -42,12 +42,12 @@ class Ip_History_List_Table extends WP_List_Table
     {
         $this->_column_headers = [$this->get_columns()];
 
-        $total_items = Ip_History_Sql_Repository::count_records(self::per_page, $this->get_pagenum());
+        $total_items = Ip_History_Sql_Repository::count_records(self::PER_PAGE, $this->get_pagenum());
 
         $this->set_pagination_args([
             'total_items' => $total_items,
-            'total_pages' => (int) ceil($total_items / self::per_page),
-            'per_page' => self::per_page
+            'total_pages' => (int) ceil($total_items / self::PER_PAGE),
+            'per_page' => self::PER_PAGE
         ]);
 
         $this->process_action();
@@ -55,6 +55,6 @@ class Ip_History_List_Table extends WP_List_Table
 
         $page_number = $this->get_pagenum() - 1;
 
-        $this->items = Ip_History_Sql_Repository::find_from_last_week(self::per_page, $page_number);
+        $this->items = Ip_History_Sql_Repository::find_from_last_week(self::PER_PAGE, $page_number);
     }
 }

@@ -8,7 +8,7 @@ class Ip_Ban_Sql_Repository
         global $wpdb;
 
         if ($per_page > 200) {
-            die('Only 200 items allowed to be shown per page.');
+            throw new InvalidArgumentException('Parameter per_page is not allowed to be greater then 200.');
         }
 
         $offset = $page_number * $per_page;
@@ -23,7 +23,7 @@ class Ip_Ban_Sql_Repository
     public static function delete(int $id): void
     {
         global $wpdb;
-        // is esc_sql wel nodig als waarde een int moet zijn
+
         $wpdb->delete("{$wpdb->prefix}markei_ipban", ['id' => esc_sql($id)], ['%d']);
     }
 
@@ -33,6 +33,6 @@ class Ip_Ban_Sql_Repository
         
         $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}markei_ipban";
         
-        return absint($wpdb->get_var($sql));     // Waarom hier absint en niet (int)
+        return (int) ($wpdb->get_var($sql));
     }
 }

@@ -6,7 +6,7 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_S
 
 class Ip_Ban_List_Table extends WP_List_Table
 {
-    const per_page = 5;
+    const PER_PAGE = 5;
 
     public function get_columns(): array
     {
@@ -33,9 +33,7 @@ class Ip_Ban_List_Table extends WP_List_Table
 
     public function column_cb($item): string
     {
-        return sprintf(
-            '<input type="checkbox" name="bulk-delete[]" value="%s"/>', $item['id']
-        );
+        return sprintf('<input type="checkbox" name="bulk-delete[]" value="%s"/>', esc_attr($item['id']));
     }
 
     public function column_default($item, $column_name): string
@@ -47,9 +45,9 @@ class Ip_Ban_List_Table extends WP_List_Table
             case 'ip':
             case 'start':
             case 'end':
-                return esc_attr($item[$column_name]);
+                return esc($item[$column_name]);
             case 'action':
-                return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', $item['id'], $delete_nonce);
+                return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', esc_attr($item['id']), esc_attr($delete_nonce));
             default:
                 return 'Waarde Onbekend';
         }
@@ -66,38 +64,34 @@ class Ip_Ban_List_Table extends WP_List_Table
 
     public function process_action(): void
     {
-        // kan de empty check hier niet gewoon weg
-        if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
-            $nonce = $_REQUEST['_wpnonce'];
+        if (isset($_REQUEST['_wpnonce'])) {
+            $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
 
             if ('delete' === $this->current_action()) {
-                // kan nog een nieuwe functie verify worden gemaakt
                 if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
                     die('Invalid security token!');
                 }
 
-                Ip_Ban_Sql_Repository::delete(absint($_GET['id'])); // Waarom hier absint en niet (int)
+                Ip_Ban_Sql_Repository::delete((int) $_GET['id']);
             }
         }
     }
 
     public function process_bulk_action(): void
     {
-        if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
-            // is de filter wel nodig
+        if (isset($_POST['_wpnonce'])) {
             $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
             $action = 'bulk-' . $this->_args['plural'];
-    
-            // navragen hoe het zit met de nonce
+
             if (!wp_verify_nonce($nonce, $action)) {
-                wp_die('Invalid security token!');
+                die('Invalid security token!');
             }
 
             if ((isset($_POST['action']) && $_POST['action'] === 'bulk-delete')) {
                 $delete_ip_address_ids = $_POST['bulk-delete'];
     
                 foreach ($delete_ip_address_ids as $ip_address_id) {
-                    Ip_Ban_Sql_Repository::delete(absint($ip_address_id));     // Waarom hier absint en niet (int)
+                    Ip_Ban_Sql_Repository::delete((int) $ip_address_id);
                 }
             }
         }
@@ -114,8 +108,8 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $this->set_pagination_args([
             'total_items' => $total_items,
-            'total_pages' => (int) ceil($total_items / self::per_page),
-            'per_page' => self::per_page
+            'total_pages' => (int) ceil($total_items / self::PER_PAGE),
+            'per_page' => self::PER_PAGE
         ]);
 
         $this->process_action();
@@ -123,6 +117,6 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $page_number = $this->get_pagenum() - 1;
 
-        $this->items = Ip_Ban_Sql_Repository::find_all(self::per_page, $page_number);
+        $this->items = Ip_Ban_Sql_Repository::find_all(self::PER_PAGE, $page_number);
     }
 }
