@@ -71,7 +71,7 @@ class Ip_Ban_List_Table extends WP_List_Table
                 die('Invalid security token!');
             }
 
-            Ip_Ban_Sql_Repository::delete(absint($_GET['id'])); 
+            Ip_Ban_Sql_Repository::delete(absint($_GET['id'])); // Waarom hier absint en niet (int)
         }
     }
 
@@ -89,7 +89,7 @@ class Ip_Ban_List_Table extends WP_List_Table
                 $delete_ip_address_ids = esc_sql($_POST['bulk-delete']);
     
                 foreach ($delete_ip_address_ids as $ip_address_id) {
-                    Ip_Ban_Sql_Repository::delete(absint($ip_address_id));
+                    Ip_Ban_Sql_Repository::delete(absint($ip_address_id));     // Waarom hier absint en niet (int)
                 }
             }
         }
@@ -106,7 +106,7 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $this->set_pagination_args([
             'total_items' => $total_items,
-            'total_pages' => intval(ceil($total_items / 5)),
+            'total_pages' => (int) ceil($total_items / 5),
             'per_page' => 5
         ]);
 

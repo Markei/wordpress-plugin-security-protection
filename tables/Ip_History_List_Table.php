@@ -44,7 +44,7 @@ class Ip_History_List_Table extends WP_List_Table
 
         $this->set_pagination_args([
             'total_items' => $total_items,
-            'total_pages' => intval(ceil($total_items / 5)),
+            'total_pages' => (int) ceil($total_items / 5),
             'per_page' => 5
         ]);
 

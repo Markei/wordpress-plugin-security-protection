@@ -29,6 +29,6 @@ class Ip_Ban_Sql_Repository
         
         $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}markei_ipban";
         
-        return absint($wpdb->get_var($sql));
+        return absint($wpdb->get_var($sql));     // Waarom hier absint en niet (int)
     }
 }

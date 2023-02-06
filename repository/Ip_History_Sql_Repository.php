@@ -20,6 +20,6 @@ class Ip_History_Sql_Repository
 
         $sql = "SELECT count(*) FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY";
 
-        return absint($wpdb->get_var($sql));
+        return absint($wpdb->get_var($sql));    // Waarom hier absint en niet (int)
     }
 }
