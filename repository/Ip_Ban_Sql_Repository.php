@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 class Ip_Ban_Sql_Repository
 {
-    public static function findAll(int $per_page, int $page_number): array
+    public static function find_all(int $per_page, int $page_number): array
     {
         global $wpdb;
 

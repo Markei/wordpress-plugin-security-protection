@@ -115,6 +115,6 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $page_number = $this->get_pagenum() - 1;
 
-        $this->items = Ip_Ban_Sql_Repository::findAll(5, $page_number);
+        $this->items = Ip_Ban_Sql_Repository::find_all(5, $page_number);
     }
 }

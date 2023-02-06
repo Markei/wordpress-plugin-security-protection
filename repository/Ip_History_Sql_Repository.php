@@ -3,7 +3,7 @@ declare(strict_types = 1);
 
 class Ip_History_Sql_Repository
 {
-    public static function FindFromLastWeek(int $per_page, int $page_number): array
+    public static function find_from_last_week(int $per_page, int $page_number): array
     {
         global $wpdb;
 
