@@ -7,6 +7,10 @@ class Ip_History_Sql_Repository
     {
         global $wpdb;
 
+        if ($per_page > 200) {
+            die('Only 200 items allowed to be shown per page.');
+        }
+
         $offset = $page_number * $per_page;
 
         $sql = "SELECT * FROM {$wpdb->prefix}markei_loginhistory WHERE DATE(datetime) >= CURDATE() - INTERVAL 7 DAY LIMIT {$per_page} OFFSET {$offset}";
