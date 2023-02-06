@@ -64,23 +64,29 @@ class Ip_Ban_List_Table extends WP_List_Table
 
     public function process_action(): void
     {
-        if ('delete' === $this->current_action()) {
-            $nonce = esc_attr($_REQUEST['_wpnonce']);// nalopen of esc_attr hier wel nodig is
+        // kan de empty check hier niet gewoon weg
+        if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
+            $nonce = $_REQUEST['_wpnonce'];
 
-            if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
-                die('Invalid security token!');
+            if ('delete' === $this->current_action()) {
+                // kan nog een nieuwe functie verify worden gemaakt
+                if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
+                    die('Invalid security token!');
+                }
+
+                Ip_Ban_Sql_Repository::delete(absint($_GET['id'])); // Waarom hier absint en niet (int)
             }
-
-            Ip_Ban_Sql_Repository::delete(absint($_GET['id'])); // Waarom hier absint en niet (int)
         }
     }
 
     public function process_bulk_action(): void
     {
         if (isset($_POST['_wpnonce']) && !empty($_POST['_wpnonce'])) {
+            // is de filter wel nodig
             $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
             $action = 'bulk-' . $this->_args['plural'];
     
+            // navragen hoe het zit met de nonce
             if (!wp_verify_nonce($nonce, $action)) {
                 wp_die('Invalid security token!');
             }
