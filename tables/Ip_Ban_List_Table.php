@@ -6,6 +6,8 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_S
 
 class Ip_Ban_List_Table extends WP_List_Table
 {
+    const per_page = 5;
+
     public function get_columns(): array
     {
         $columns = [
@@ -112,8 +114,8 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $this->set_pagination_args([
             'total_items' => $total_items,
-            'total_pages' => (int) ceil($total_items / 5),
-            'per_page' => 5
+            'total_pages' => (int) ceil($total_items / self::per_page),
+            'per_page' => self::per_page
         ]);
 
         $this->process_action();
@@ -121,6 +123,6 @@ class Ip_Ban_List_Table extends WP_List_Table
 
         $page_number = $this->get_pagenum() - 1;
 
-        $this->items = Ip_Ban_Sql_Repository::find_all(5, $page_number);
+        $this->items = Ip_Ban_Sql_Repository::find_all(self::per_page, $page_number);
     }
 }
