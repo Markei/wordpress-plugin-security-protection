@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-require_once(WP_PLUGIN_DIR . '/wordpress-security-protection/tables/Ip_History_List_Table.php');
+require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'tables' . DIRECTORY_SEPARATOR . 'Ip_History_List_Table.php');
 
 $ip_history_list_table = new Ip_History_List_Table();
 $ip_history_list_table->prepare_items();
