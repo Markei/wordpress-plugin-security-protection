@@ -1,12 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-list-table.php';
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_SEPARATOR . 'Ip_History_Sql_Repository.php';
 
 class Ip_History_List_Table extends WP_List_Table
 {
-    const PER_PAGE = 5;
+    // Navragen welke waarde hiervoor te gebruiken
+    const PER_PAGE = 10;
 
     public function get_columns(): array
     {
@@ -30,7 +31,8 @@ class Ip_History_List_Table extends WP_List_Table
             case 'user':
             case 'useragent':
             case 'datetime':
-                return esc($item[$column_name]);
+                // navragen welke escape hier gebruikt moet worden
+                return ($item[$column_name]);
             case 'success':
                 return $item[$column_name] == 1 ? 'Succesvol' : 'Mislukt';
             default:
@@ -42,7 +44,7 @@ class Ip_History_List_Table extends WP_List_Table
     {
         $this->_column_headers = [$this->get_columns()];
 
-        $total_items = Ip_History_Sql_Repository::count_records(self::PER_PAGE, $this->get_pagenum());
+        $total_items = Ip_History_Sql_Repository::count_records();
 
         $this->set_pagination_args([
             'total_items' => $total_items,

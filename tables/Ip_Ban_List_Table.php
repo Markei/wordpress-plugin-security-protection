@@ -1,12 +1,13 @@
 <?php
 declare(strict_types = 1);
 
-require_once ABSPATH . 'wp-admin/includes/class-wp-list-table.php';
+require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'class-wp-list-table.php';
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_SEPARATOR . 'Ip_Ban_Sql_Repository.php';
 
 class Ip_Ban_List_Table extends WP_List_Table
 {
-    const PER_PAGE = 5;
+    // Navragen welke waarde hiervoor te gebruiken
+    const PER_PAGE = 20;
 
     public function get_columns(): array
     {
@@ -45,8 +46,10 @@ class Ip_Ban_List_Table extends WP_List_Table
             case 'ip':
             case 'start':
             case 'end':
-                return esc($item[$column_name]);
+                // navragen welke escape hier gebruikt moet worden
+                return ($item[$column_name]);
             case 'action':
+                // Delete misschien beter veranderen in deblokeer?
                 return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', esc_attr($item['id']), esc_attr($delete_nonce));
             default:
                 return 'Waarde Onbekend';
@@ -65,7 +68,7 @@ class Ip_Ban_List_Table extends WP_List_Table
     public function process_action(): void
     {
         if (isset($_REQUEST['_wpnonce'])) {
-            $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
+            $nonce = filter_input(INPUT_GET, '_wpnonce', FILTER_UNSAFE_RAW);
 
             if ('delete' === $this->current_action()) {
                 if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
@@ -80,7 +83,7 @@ class Ip_Ban_List_Table extends WP_List_Table
     public function process_bulk_action(): void
     {
         if (isset($_POST['_wpnonce'])) {
-            $nonce  = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
+            $nonce = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
             $action = 'bulk-' . $this->_args['plural'];
 
             if (!wp_verify_nonce($nonce, $action)) {
@@ -89,7 +92,7 @@ class Ip_Ban_List_Table extends WP_List_Table
 
             if ((isset($_POST['action']) && $_POST['action'] === 'bulk-delete')) {
                 $delete_ip_address_ids = $_POST['bulk-delete'];
-    
+
                 foreach ($delete_ip_address_ids as $ip_address_id) {
                     Ip_Ban_Sql_Repository::delete((int) $ip_address_id);
                 }
