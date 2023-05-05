@@ -7,16 +7,10 @@ class Ip_Ban_Sql_Repository
     {
         global $wpdb;
 
-        // navragen of hier ook een escape moet
-        if ($per_page > 200) {
-            throw new InvalidArgumentException('Parameter per_page is not allowed to be greater then 200.');
-        }
+        $per_page = min($per_page, 200);
 
-        // navragen of hier ook een escape moet
-        $offset = $page_number * $per_page;
-        
-        $sql = "SELECT * FROM {$wpdb->prefix}markei_ipban LIMIT " . esc_sql($per_page) . " OFFSET " . esc_sql($offset);
-        
+        $sql = "SELECT * FROM {$wpdb->prefix}markei_ipban LIMIT " . esc_sql($per_page) . " OFFSET " . esc_sql($page_number * $per_page);
+
         $result = $wpdb->get_results($sql, 'ARRAY_A');
 
         return $result;
@@ -32,9 +26,9 @@ class Ip_Ban_Sql_Repository
     public static function count_records(): int
     {
         global $wpdb;
-        
+
         $sql = "SELECT COUNT(*) FROM {$wpdb->prefix}markei_ipban";
-        
+
         return (int) ($wpdb->get_var($sql));
     }
 }

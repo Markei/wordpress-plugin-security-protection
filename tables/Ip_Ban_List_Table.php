@@ -6,20 +6,19 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_S
 
 class Ip_Ban_List_Table extends WP_List_Table
 {
-    // Navragen welke waarde hiervoor te gebruiken
     const PER_PAGE = 20;
 
     public function get_columns(): array
     {
         $columns = [
-            'id' => 'Id',
+            'id' => '#',
             'cb' => '<input type="checkbox"/>',
-            'ip' => 'IP',
+            'ip' => 'IP adres',
             'start' => 'Start',
             'end' => 'Eind',
             'action'=> 'Acties'
         ];
-        
+
         return $columns;
     }
 
@@ -28,7 +27,7 @@ class Ip_Ban_List_Table extends WP_List_Table
         $hidden_columns = [
             'id'
         ];
-        
+
         return $hidden_columns;
     }
 
@@ -46,11 +45,9 @@ class Ip_Ban_List_Table extends WP_List_Table
             case 'ip':
             case 'start':
             case 'end':
-                // navragen welke escape hier gebruikt moet worden
-                return ($item[$column_name]);
+                return esc_html($item[$column_name]);
             case 'action':
-                // Delete misschien beter veranderen in deblokeer?
-                return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Delete</a>', esc_attr($_REQUEST['page']), 'delete', esc_attr($item['id']), esc_attr($delete_nonce));
+                return sprintf('<a href="?page=%s&action=%s&id=%s&_wpnonce=%s">Deblokkeren</a>', esc_attr($_REQUEST['page']), 'delete', esc_attr($item['id']), esc_attr($delete_nonce));
             default:
                 return 'Waarde Onbekend';
         }
@@ -67,35 +64,38 @@ class Ip_Ban_List_Table extends WP_List_Table
 
     public function process_action(): void
     {
-        if (isset($_REQUEST['_wpnonce'])) {
-            $nonce = filter_input(INPUT_GET, '_wpnonce', FILTER_UNSAFE_RAW);
+        if (isset($_REQUEST['_wpnonce']) === false) {
+            return;
+        }
+        $nonce = filter_input(INPUT_GET, '_wpnonce', FILTER_UNSAFE_RAW);
 
-            if ('delete' === $this->current_action()) {
-                if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
-                    die('Invalid security token!');
-                }
-
-                Ip_Ban_Sql_Repository::delete((int) $_GET['id']);
+        if ('delete' === $this->current_action()) {
+            if (!wp_verify_nonce($nonce, 'wp_delete_ip_address')) {
+                die('Invalid security token!');
             }
+            Ip_Ban_Sql_Repository::delete((int) $_GET['id']);
         }
     }
 
     public function process_bulk_action(): void
     {
-        if (isset($_POST['_wpnonce'])) {
-            $nonce = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
-            $action = 'bulk-' . $this->_args['plural'];
+        if (isset($_POST['action']) === false) {
+            return;
+        }
 
-            if (!wp_verify_nonce($nonce, $action)) {
-                die('Invalid security token!');
-            }
+        if (isset($_POST['_wpnonce']) === false) {
+            return;
+        }
+        $nonce = filter_input(INPUT_POST, '_wpnonce', FILTER_UNSAFE_RAW);
 
-            if ((isset($_POST['action']) && $_POST['action'] === 'bulk-delete')) {
-                $delete_ip_address_ids = $_POST['bulk-delete'];
+        $action = 'bulk-' . $this->_args['plural'];
+        if (!wp_verify_nonce($nonce, $action)) {
+            die('Invalid security token!');
+        }
 
-                foreach ($delete_ip_address_ids as $ip_address_id) {
-                    Ip_Ban_Sql_Repository::delete((int) $ip_address_id);
-                }
+        if ($_POST['action'] === 'bulk-delete') {
+            foreach ($_POST['bulk-delete'] as $ip_address_id) {
+                Ip_Ban_Sql_Repository::delete((int) $ip_address_id);
             }
         }
     }

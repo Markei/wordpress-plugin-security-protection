@@ -6,7 +6,6 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'repository' . DIRECTORY_S
 
 class Ip_History_List_Table extends WP_List_Table
 {
-    // Navragen welke waarde hiervoor te gebruiken
     const PER_PAGE = 10;
 
     public function get_columns(): array
@@ -15,11 +14,11 @@ class Ip_History_List_Table extends WP_List_Table
             'ip' => 'IP',
             'request_uri' => 'Request URI',
             'user' => 'Gebruiker',
-            'useragent' => 'Gebruikersagent',
+            'useragent' => 'Browser',
             'datetime' => 'Datum',
             'success'=> 'Status'
         );
-        
+
         return $columns;
     }
 
@@ -31,8 +30,7 @@ class Ip_History_List_Table extends WP_List_Table
             case 'user':
             case 'useragent':
             case 'datetime':
-                // navragen welke escape hier gebruikt moet worden
-                return ($item[$column_name]);
+                return esc_html($item[$column_name]);
             case 'success':
                 return $item[$column_name] == 1 ? 'Succesvol' : 'Mislukt';
             default:
@@ -55,8 +53,6 @@ class Ip_History_List_Table extends WP_List_Table
         $this->process_action();
         $this->process_bulk_action();
 
-        $page_number = $this->get_pagenum() - 1;
-
-        $this->items = Ip_History_Sql_Repository::find_from_last_week(self::PER_PAGE, $page_number);
+        $this->items = Ip_History_Sql_Repository::find_from_last_week(self::PER_PAGE, $this->get_pagenum() - 1);
     }
 }
