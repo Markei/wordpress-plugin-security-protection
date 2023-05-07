@@ -9,7 +9,7 @@ class Ip_History_Sql_Repository
 
         $per_page = min($per_page, 200);
 
-        $sql = "SELECT * FROM {$wpdb->prefix}markei_loginhistory WHERE datetime >= CURRENT_DATE - 6 AND DATETIME <= NOW() LIMIT " . esc_sql($per_page) . " OFFSET " . esc_sql($page_number * $per_page;);
+        $sql = "SELECT * FROM {$wpdb->prefix}markei_loginhistory WHERE datetime >= CURRENT_DATE - 6 AND DATETIME <= NOW() LIMIT " . esc_sql($per_page) . " OFFSET " . esc_sql($page_number * $per_page);
 
         return $wpdb->get_results($sql, 'ARRAY_A');
     }
